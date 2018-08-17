@@ -1,3 +1,6 @@
-.vscode
+.DS_Store
+node_modules
+*.sock
 .idea
-node_modules/
+.vscode/
+.wakeup

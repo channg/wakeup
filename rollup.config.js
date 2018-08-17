@@ -7,6 +7,8 @@ import autoprefixer from 'autoprefixer'
 import postcss from 'rollup-plugin-postcss'
 import vars from 'postcss-simple-vars'
 import preset from 'postcss-preset-env'
+const os = require('os');
+const paths = require('path')
 export default {
   input: 'index.js',
   output: {
@@ -29,7 +31,9 @@ export default {
     babel({
       exclude: 'node_modules/**'
     }),
-    serve(),
+    serve({
+      contentBase:paths.resolve(os.homedir(), 'a')
+    }),
     livereload()
   ]
 }
