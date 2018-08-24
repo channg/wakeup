@@ -27,13 +27,13 @@
     "rollup-plugin-multi-entry": "^2.0.2",
     "rollup-plugin-postcss": "^1.6.2",
     "stylus": "^0.54.5",
-    "umoji": "^1.0.0"
-  },
-  "devDependencies": {
+    "umoji": "^1.0.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.5",
     "rollup-plugin-livereload": "^0.6.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-serve": "^0.4.2"
+  },
+  "devDependencies": {
   }
 }

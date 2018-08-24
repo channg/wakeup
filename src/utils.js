@@ -1,38 +1,33 @@
-const spawn = require('cross-spawn');
 const path = require('path')
+const fse = require('fs-extra')
+const isIn = require('is-in-path')
+const fs = require('fs')
+const cheerio = require('cheerio')
+const _static = require('./static')
+function getHtmlSrc() {
+  fse.copySync(_static.localIndex,path.resolve('./.wakeup',_static.localIndex))
+  let currentPathSrc = []
+  let html = fs.readFileSync(_static.localIndex, 'utf-8')
+  let srcArr = getScriptArray(html)
+  srcArr.forEach((src)=>{
+    if(isIn(process.cwd(),src))
+      currentPathSrc.push(src)
+  })
+  return currentPathSrc
+}
+
+function getScriptArray(html) {
+  let _arr = []
+  let $ = cheerio.load(html)
+  $('script').each(function () {
+    let _src = $(this).attr('src')
+    if (fs.existsSync(_src)) {
+      _arr.push(_src)
+    }
+  })
+  return _arr
+}
+
 module.exports = {
-    randomName:function(){
-        return generateMixed(6)
-    },
-  rollWatch:rollWatch,
-    getBin:getBin
-}
-
-var chars = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-
-function generateMixed(n) {
-  var res = "";
-  for(var i = 0; i < n ; i ++) {
-    var id = Math.ceil(Math.random()*35);
-    res += chars[id];
-  }
-  return res;
-}
-
-
-function getBin(binName) {
-  return path.resolve(__dirname, `../node_modules/.bin/${binName}`);
-}
-
-
-function rollWatch() {
-  return () => {
-    spawn(getBin('rollup'), [
-      '-c '+path.resolve(__dirname,'../rollup.config.js')
-    ], {
-      stdio: [0,1,2],
-    }).on('error', (error) => {
-      console.log(error);
-    });
-  };
+  getHtmlSrc:getHtmlSrc
 }
