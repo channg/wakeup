@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 const version = require('../package.json').version
 const program = require('commander')
+const colors = require('colors')
 
 const fs = require('fs')
 const fse = require('fs-extra')
 const _static = require('../src/static')
-
 
 const {rollWatch} = require('../src/instruction')
 program
@@ -19,6 +19,8 @@ program
     ensureCachePath()
     ensureIndex().then(() => {
       rollWatch()
+    }).catch(()=>{
+      console.log("\nerror:has not index.html".red)
     })
   });
 

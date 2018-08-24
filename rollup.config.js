@@ -1,4 +1,4 @@
-import serve from 'rollup-plugin-serve'
+import serve from 'rollup-plugin-serve-favicon'
 import livereload from 'rollup-plugin-livereload'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
@@ -7,8 +7,10 @@ import autoprefixer from 'autoprefixer'
 import postcss from 'rollup-plugin-postcss'
 import vars from 'postcss-simple-vars'
 import preset from 'postcss-preset-env'
-import multiEntry from "rollup-plugin-multi-entry"
 import path from 'path'
+
+import babelConfig from './config/babel.config'
+
 const {getHtmlSrc} = require('./src/utils')
 
 let _config = []
@@ -19,14 +21,18 @@ if (srcArr && srcArr.length > 0) {
   for (let i = 0; i < srcArr.length; i++) {
     if(i === 0 ){
       _config.push({
-        input: srcArr[i],
+        input: srcArr[i].src,
+        options: {
+          noConflict: true,
+          name: 'FooBar'
+        },
         output: {
-          file: path.resolve('./.wakeup',srcArr[i]),
+          file: path.resolve('./.wakeup',srcArr[i].src),
           format: 'umd',
-          name: 'some'
+          sourcemap: true,
+          name:srcArr[i].name
         },
         plugins: [
-          multiEntry(),
           postcss({
             plugins: [
               vars(),
@@ -34,15 +40,14 @@ if (srcArr && srcArr.length > 0) {
               autoprefixer({browsers: ['> 0.001%', 'not ie < 9'],}),
             ],
           }),
+          babel(babelConfig),
           resolve(),
           commonjs({
             include: './**'
           }),
-          babel({
-            exclude: 'node_modules/**'
-          }),
           serve({
-            contentBase:'./.wakeup'
+            contentBase:'./.wakeup',
+            favicon:path.resolve(__dirname,'./favicon.ico')
           }),
           livereload({
             watch: './.wakeup'
@@ -51,14 +56,14 @@ if (srcArr && srcArr.length > 0) {
       })
     }else{
       _config.push({
-        input: srcArr[i],
+        input: srcArr[i].src,
         output: {
-          file: path.resolve('./.wakeup',srcArr[i]),
+          file: path.resolve('./.wakeup',srcArr[i].src),
           format: 'umd',
-          name: 'some'
+          sourcemap: true,
+          name:srcArr[i].name
         },
         plugins: [
-          multiEntry(),
           postcss({
             plugins: [
               vars(),
@@ -66,12 +71,10 @@ if (srcArr && srcArr.length > 0) {
               autoprefixer({browsers: ['> 0.001%', 'not ie < 9'],}),
             ],
           }),
+          babel(babelConfig),
           resolve(),
           commonjs({
             include: './**'
-          }),
-          babel({
-            exclude: 'node_modules/**'
           })
         ]
       })

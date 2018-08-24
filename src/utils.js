@@ -9,9 +9,9 @@ function getHtmlSrc() {
   let currentPathSrc = []
   let html = fs.readFileSync(_static.localIndex, 'utf-8')
   let srcArr = getScriptArray(html)
-  srcArr.forEach((src)=>{
-    if(isIn(process.cwd(),src))
-      currentPathSrc.push(src)
+  srcArr.forEach((item)=>{
+    if(isIn(process.cwd(),item.src))
+      currentPathSrc.push(item)
   })
   return currentPathSrc
 }
@@ -21,8 +21,10 @@ function getScriptArray(html) {
   let $ = cheerio.load(html)
   $('script').each(function () {
     let _src = $(this).attr('src')
+    let _wk_name = $(this).attr('wu-name')
     if (fs.existsSync(_src)) {
-      _arr.push(_src)
+      let name = path.basename(_src).split('.')[0]
+      _arr.push({src:_src,name:_wk_name||name})
     }
   })
   return _arr

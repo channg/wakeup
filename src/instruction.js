@@ -4,20 +4,17 @@ module.exports = {
   rollWatch: rollWatch,
 }
 
-
-
-
-
 function getBin(binName) {
   return path.resolve(__dirname, `../node_modules/.bin/${binName}`);
 }
-
 
 function rollWatch() {
   spawn(getBin('rollup'), [
     '-c',
     path.resolve(__dirname, '../rollup.config.js'),
-    '--watch'
+    '--watch',
+    '--no-treeshake',
+    '--no-conflict'
   ], {
     stdio: [0, 1, 2],
   }).on('error', (error) => {
