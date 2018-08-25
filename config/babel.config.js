@@ -1,12 +1,13 @@
 export default {
-  exclude: 'node_modules/**',
+  exclude: ['node_modules/**',
+    '*.json'],
   presets: [
     [
       require.resolve('babel-preset-env'),
-      { modules: false },
+      {modules: false},
     ],
   ],
   plugins: [
     'babel-plugin-external-helpers'
-  ].map(require.resolve),
+  ].map(require.resolve)
 };

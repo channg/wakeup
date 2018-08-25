@@ -9,15 +9,15 @@ function getBin(binName) {
 }
 
 function rollWatch() {
-  spawn(getBin('rollup'), [
+  let wu = spawn(getBin('rollup'), [
     '-c',
     path.resolve(__dirname, '../rollup.config.js'),
     '--watch',
-    '--no-treeshake',
-    '--no-conflict'
+    '--no-treeshake'
   ], {
     stdio: [0, 1, 2],
-  }).on('error', (error) => {
-    console.log(error);
-  });
+  })
+  wu.on('error', (error) => {
+    console.log(`error:${error}`);
+  })
 }

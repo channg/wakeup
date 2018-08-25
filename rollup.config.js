@@ -7,6 +7,7 @@ import autoprefixer from 'autoprefixer'
 import postcss from 'rollup-plugin-postcss'
 import vars from 'postcss-simple-vars'
 import preset from 'postcss-preset-env'
+import notify from 'rollup-plugin-notify'
 import path from 'path'
 
 import babelConfig from './config/babel.config'
@@ -22,10 +23,6 @@ if (srcArr && srcArr.length > 0) {
     if(i === 0 ){
       _config.push({
         input: srcArr[i].src,
-        options: {
-          noConflict: true,
-          name: 'FooBar'
-        },
         output: {
           file: path.resolve('./.wakeup',srcArr[i].src),
           format: 'umd',
@@ -33,6 +30,7 @@ if (srcArr && srcArr.length > 0) {
           name:srcArr[i].name
         },
         plugins: [
+          notify(),
           postcss({
             plugins: [
               vars(),
@@ -64,6 +62,7 @@ if (srcArr && srcArr.length > 0) {
           name:srcArr[i].name
         },
         plugins: [
+          notify(),
           postcss({
             plugins: [
               vars(),
@@ -81,6 +80,5 @@ if (srcArr && srcArr.length > 0) {
     }
   }
 }
-
 
 export default _config
