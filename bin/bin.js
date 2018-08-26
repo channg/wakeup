@@ -19,8 +19,12 @@ program
     ensureCachePath()
     ensureIndex().then(() => {
       rollWatch()
-    }).catch(()=>{
-      console.log("\nerror:has not index.html".red)
+    }).catch((err)=>{
+      if(err.errno===111){
+        console.log("error:has not index.html".red)
+      }else{
+        console.log(err.message.red)
+      }
     })
   });
 
@@ -38,7 +42,7 @@ function ensureIndex() {
   if (exists) {
     return Promise.resolve()
   } else {
-    return Promise.reject()
+    return Promise.reject({errno:111})
   }
 }
 
