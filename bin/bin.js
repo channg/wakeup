@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 const version = require('../package.json').version
 const program = require('commander')
-const colors = require('colors')
+require('colors')
 
 const fs = require('fs')
 const fse = require('fs-extra')
 const _static = require('../src/static')
-
+const {compile} = require('../src/utils')
 const {rollWatch} = require('../src/instruction')
+
 program
   .version(version);
 
@@ -18,6 +19,7 @@ program
   .action(() => {
     ensureCachePath()
     ensureIndex().then(() => {
+      compile()
       rollWatch()
     }).catch((err)=>{
       if(err.errno===111){

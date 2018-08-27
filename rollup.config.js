@@ -11,11 +11,11 @@ import notify from 'rollup-plugin-notify'
 import json from 'rollup-plugin-json';
 import path from 'path'
 import babelConfig from './config/babel.config'
-const {getHtmlSrc} = require('./src/utils')
+
 
 let _config = []
 
-let srcArr = getHtmlSrc()
+
 
 if (srcArr && srcArr.length > 0) {
   for (let i = 0; i < srcArr.length; i++) {

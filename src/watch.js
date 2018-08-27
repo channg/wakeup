@@ -1,5 +1,4 @@
 const {rollup,watch} = require('rollup');
-const {getHtmlSrc} = require('./utils')
 const json = require('rollup-plugin-json')
 const postcss = require('rollup-plugin-postcss')
 const preset = require('postcss-preset-env')
@@ -12,10 +11,11 @@ const serve = require('rollup-plugin-serve-favicon')
 const livereload = require('rollup-plugin-livereload')
 const path = require('path')
 const log = require('./log')
+const _static = require('./static')
 
 
 module.exports = function () {
-  let srcArr = getHtmlSrc()
+  let srcArr = _static.srcArr
   if (srcArr && srcArr.length > 0) {
     let inputOptions = {}
     let outputOptions = {}
