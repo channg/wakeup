@@ -26,6 +26,9 @@ module.exports = {
   ERROR: (data)=> {
     ll(data.error.message.red)
     ll(data.error.codeFrame)
+  },
+  RESTART:()=>{
+    ll('Configuration changes, require restart'.yellow.bold)
   }
 }
 

@@ -14,6 +14,8 @@ const _static = require('./static')
 const html = require('../plugin/ru-html')
 
 module.exports = function () {
+
+  let saveConfig = JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
   let srcArr = _static.srcArr
   //script
   if (srcArr && srcArr.length > 0) {
@@ -49,7 +51,7 @@ module.exports = function () {
       outputOptions.name = item.name
       const watchOptions = {...inputOptions, output: [outputOptions]}
       const watcher = watch(watchOptions)
-      
+
       watcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
@@ -124,6 +126,10 @@ module.exports = function () {
         log.BUNDLE_END(event)
       } else if (event.code === 'END') {
         log.END()
+        let nowConfig = JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
+        if(saveConfig!==nowConfig){
+          log.RESTART()
+        }
       } else if (event.code === 'FATAL') {
         log.FATAL(event)
       } else if (event.code === 'ERROR') {

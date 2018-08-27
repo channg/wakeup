@@ -83,5 +83,3 @@ module.exports = {
   timetrans: timetrans,
   compile: compile
 }
-
-compile()
