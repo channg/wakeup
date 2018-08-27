@@ -6,7 +6,7 @@ require('colors')
 const fs = require('fs')
 const fse = require('fs-extra')
 const _static = require('../src/static')
-const {compile} = require('../src/utils')
+const {compile,dolivereload} = require('../src/utils')
 const {rollWatch} = require('../src/instruction')
 
 program
@@ -19,8 +19,9 @@ program
   .action(() => {
     ensureCachePath()
     ensureIndex().then(() => {
-      compile()
+      compile({livereload:true})
       rollWatch()
+      dolivereload()
     }).catch((err)=>{
       if(err.errno===111){
         console.log("error:has not index.html".red)
