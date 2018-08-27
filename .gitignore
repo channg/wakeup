@@ -4,4 +4,6 @@ node_modules
 .idea
 .vscode/
 .wakeup
-.rollup.config.js
+rollup.config.js
+index.html
+index.js
