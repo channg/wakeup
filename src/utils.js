@@ -5,6 +5,7 @@ const fs = require('fs')
 const cheerio = require('cheerio')
 const _static = require('./static')
 const livereload = require('livereload');
+const urlnode = require('url');
 
 function compile(opt) {
   let html = fs.readFileSync(_static.localIndex, 'utf-8')
@@ -12,9 +13,11 @@ function compile(opt) {
   
   compileScript($)
   compileLink($)
-  if(opt&&opt.livereload){
+  if (opt && opt.livereload) {
     addLivereloadScript($)
   }
+  compileImgSrc($)
+  $ = compileUrl($)
   outPutFile($)
 }
 
@@ -22,7 +25,7 @@ function compileScript($) {
   let _arr = []
   $('script').each(function () {
     let _src = $(this).attr('src')
-    if (_src&&isIn(process.cwd(), _src)) {
+    if (_src && isIn(process.cwd(), _src)) {
       let _wk_name = $(this).attr('wu-name')
       if (fs.existsSync(_src)) {
         let name = path.basename(_src).split('.')[0]
@@ -45,16 +48,16 @@ function compileLink($) {
   const _hrefArr = []
   $('link').each(function () {
     let _href = $(this).attr('href')
-    if (_href&&isIn(process.cwd(), _href)&&fs.existsSync(_href)) {
-      _hrefArr.push({href:_href})
-      $(this).attr('href',_href.substr(-4)==='.css'?_href:_href+'.css')
+    if (_href && isIn(process.cwd(), _href) && fs.existsSync(_href)) {
+      _hrefArr.push({href: _href})
+      $(this).attr('href', _href.substr(-4) === '.css' ? _href : _href + '.css')
     }
   })
   _static.hrefArr = _hrefArr
 }
 
 function timetrans(date) {
-  var date = new Date(date);//如果date为13位不需要乘1000
+  var date = new Date(date);
   var Y = date.getFullYear() + '-';
   var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
   var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate()) + ' ';
@@ -71,15 +74,39 @@ function dolivereload() {
 }
 
 function addLivereloadScript($) {
-  if(!$('script').attr('wu-livereload')){
+  if (!$('script').attr('wu-livereload')) {
     const str = `<script wu-livereload="true">document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +':35729/livereload.js?snipver=1"></' + 'script>')</script>`
     $('body').append(str)
   }
 }
 
+function compileUrl($) {
+  return cheerio.load($.html().replace(/(url\()(.*)(\))/g, function (match, p1, p2, p3) {
+    let url = p2.replace(/&apos;|&quot;|'|"/g, "")
+    if (url && isIn(process.cwd(), url)) {
+      let then = path.join('img', url).replace(/\\/, '/')
+      fse.copySync(url, then)
+      return p1 + then + p3
+    } else {
+      return match
+    }
+  }))
+}
+
+function compileImgSrc($) {
+  $('img').each(function () {
+    var imgSrc = $(this).attr('src')
+    if(imgSrc&&isIn(process.cwd(),imgSrc)){
+      let then = path.join('img', imgSrc).replace(/\\/, '/')
+      $(this).attr('src',then)
+      fse.copySync(imgSrc, then)
+    }
+  })
+}
+
 
 module.exports = {
-  dolivereload:dolivereload,
+  dolivereload: dolivereload,
   timetrans: timetrans,
   compile: compile
 }
