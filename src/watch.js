@@ -1,6 +1,6 @@
-const {rollup, watch} = require('rollup');
+const {watch} = require('rollup');
 const json = require('rollup-plugin-json')
-const postcss = require('rollup-plugin-postcss')
+const postcss = require('rollup-plugin-postcss-fix')
 const preset = require('postcss-preset-env')
 const autoprefixer = require('autoprefixer')
 const babel = require('rollup-plugin-babel')
@@ -12,6 +12,7 @@ const path = require('path')
 const log = require('./log')
 const _static = require('./static')
 const html = require('../plugin/ru-html')
+const url = require("postcss-url")
 
 module.exports = function () {
 
@@ -28,6 +29,10 @@ module.exports = function () {
         json(),
         postcss({
           plugins: [
+            url({
+              url: 'copy',
+              assetsPath: 'img'
+            }),
             preset(),
             autoprefixer({browsers: ['> 0.001%', 'not ie < 9']})
           ]
@@ -38,13 +43,6 @@ module.exports = function () {
           include: './**'
         })
       ]
-      if (index === 0) {
-        inputOptions.plugins.push(
-          serve({
-            contentBase: './.wakeup',
-            favicon: path.resolve(__dirname, '../favicon.ico')
-          }))
-      }
       outputOptions.file = path.resolve('./.wakeup', item.src)
       outputOptions.format = 'umd'
       outputOptions.sourcemap = true
@@ -71,17 +69,30 @@ module.exports = function () {
       })
     })
   }
+  //stylesheet
   let hrefArr = _static.hrefArr
   if (hrefArr && hrefArr.length > 0) {
     hrefArr.forEach((item) => {
+      let fn = item.href.substr(-4) === '.css' ? item.href : item.href + '.css'
       let inputOptions = {}
       let outputOptions = {}
       inputOptions.input = item.href
       inputOptions.treeshake = false
       inputOptions.plugins = [
-        postcss({sourceMap: true, extract: true})
+        postcss({
+          sourceMap: true,
+          extract: true,
+          to:path.resolve('./.wakeup', fn),
+          plugins:[
+            url({
+              url: 'copy',
+              assetsPath: 'img'
+            }),
+            preset(),
+            autoprefixer({browsers: ['> 0.001%', 'not ie < 9']})
+            ]
+          })
       ]
-      let fn = item.href.substr(-4) === '.css' ? item.href : item.href + '.css'
       outputOptions.file = path.resolve('./.wakeup', fn)
       outputOptions.format = 'esm' // not use
       const watchOptions = {...inputOptions, output: [outputOptions]}
@@ -111,7 +122,15 @@ module.exports = function () {
     inputOptions.input = _static.localIndex
     inputOptions.treeshake = false
     inputOptions.plugins = [
-      html()
+      html(),
+      serve({
+        index:_static.localIndex,
+        contentBase: './.wakeup',
+        favicon: path.resolve(__dirname, '../favicon.ico'),
+        host: _static.host,
+        port: _static.port,
+        verbose: false,
+      })
     ]
     outputOptions.file = path.resolve('./.wakeup', _static.localIndex)
     outputOptions.format = 'esm' // not use
@@ -120,6 +139,7 @@ module.exports = function () {
     watcher.on('event', event => {
       if (event.code === 'START') {
         log.START()
+        log.SERVE()
       } else if (event.code === 'BUNDLE_START') {
         log.BUNDLE_START(event)
       } else if (event.code === 'BUNDLE_END') {

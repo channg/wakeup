@@ -16,7 +16,13 @@ program
   .command('watch')
   .alias('w')
   .description('watch the program')
-  .action(() => {
+  .option("-i, --index [value]","Modify entry HTML")
+  .action((options) => {
+    if(options&&options.index&&options.index!==true){
+      if(options.index.substr(-5)!=='.html')
+        options.index+='.html'
+      _static.localIndex = options.index
+    }
     ensureCachePath()
     ensureIndex().then(() => {
       compile({livereload:true})
@@ -24,7 +30,7 @@ program
       dolivereload()
     }).catch((err)=>{
       if(err.errno===111){
-        console.log("error:has not index.html".red)
+        console.log(("error:not find the "+_static.localIndex).red)
       }else{
         console.log(err.message.red)
       }
@@ -33,7 +39,6 @@ program
 
 
 program.parse(process.argv);
-
 
 function ensureCachePath() {
   fse.removeSync(_static.cachePath)

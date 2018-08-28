@@ -1,6 +1,7 @@
 const clear = require('cli-clear')
 const {version} = require('../package.json')
 const {timetrans} = require('./utils')
+const {port,host} = require('./static')
 require('colors')
 var ll = console.log
 
@@ -10,10 +11,10 @@ module.exports = {
     ll(('wakeup v' + version).bold)
   },
   BUNDLE_START: (data)=> {
-    ll(timetrans(Date.now()).grey.bold+(' start build -> ').green.bold+data.input+"".gray)
+    ll(timetrans(Date.now()).gray.bold+(' start build -> ').green.bold+data.input+"")
   },
   BUNDLE_END: (data)=> {
-    ll(timetrans(Date.now()).grey.bold+(' end build -> ').green.bold+data.input+"".gray)
+    ll(timetrans(Date.now()).gray.bold+(' end build -> ').green.bold+data.input+"")
   },
   END: ()=> {
   },
@@ -29,6 +30,10 @@ module.exports = {
   },
   RESTART:()=>{
     ll('Configuration changes, require restart'.yellow.bold)
+  },
+  SERVE:()=>{
+    let s = ' http://'+host+':'+port
+    ll(timetrans(Date.now()).gray.bold+s)
   }
 }
 

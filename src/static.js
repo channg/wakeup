@@ -3,5 +3,7 @@ module.exports = {
   localIndex:'./index.html',
   srcArr:[],
   index:'html',
-  hrefArr:[]
+  hrefArr:[],
+  host: 'localhost',
+  port: 10001,
 }
