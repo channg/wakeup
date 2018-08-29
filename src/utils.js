@@ -85,8 +85,8 @@ function compileUrl($) {
   return cheerio.load($.html().replace(/(url\()(.*)(\))/g, function (match, p1, p2, p3) {
     let url = p2.replace(/&apos;|&quot;|'|"/g, "")
     if (url && isIn(process.cwd(), url)) {
-      let then = path.join(_static['res-path'], url).replace(/\\/, '/')
-      fse.copySync(url, then)
+      let then = path.join(_static['res-path'], url).replace(/\\/g, '/')
+      fse.copySync(url, path.resolve(_static.cachePath,then))
       return p1 + then + p3
     } else {
       return match
@@ -98,9 +98,9 @@ function compileImgSrc($) {
   $('img').each(function () {
     var imgSrc = $(this).attr('src')
     if(imgSrc&&isIn(process.cwd(),imgSrc)){
-      let then = path.join(_static['res-path'], imgSrc).replace(/\\/, '/')
+      let then = (path.join(_static['res-path'], imgSrc)).replace(/\\/g, '/')
       $(this).attr('src',then)
-      fse.copySync(imgSrc, then)
+      fse.copySync(imgSrc, path.resolve(_static.cachePath,then))
     }
   })
 }

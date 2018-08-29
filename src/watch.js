@@ -13,9 +13,10 @@ const log = require('./log')
 const _static = require('./static')
 const html = require('../plugin/ru-html')
 const url = require("postcss-url")
+const vue = require('rollup-plugin-vue').default
 
 module.exports = function () {
-
+  
   let saveConfig = summary()
   let srcArr = _static.srcArr
   //script
@@ -26,6 +27,7 @@ module.exports = function () {
       inputOptions.input = item.src
       inputOptions.treeshake = false
       inputOptions.plugins = [
+        vue(),
         json(),
         postcss({
           plugins: [
@@ -129,7 +131,7 @@ module.exports = function () {
         favicon: path.resolve(__dirname, '../favicon.ico'),
         host: _static['host'],
         port: _static['port'],
-        open: true
+        open: _static['open-browser']
       })
     ]
     outputOptions.file = path.resolve('./.wakeup', _static.localIndex)
