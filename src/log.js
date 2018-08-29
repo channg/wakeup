@@ -1,7 +1,7 @@
 const clear = require('cli-clear')
 const {version} = require('../package.json')
 const {timetrans} = require('./utils')
-const {port,host} = require('./static')
+const _static = require('./static')
 require('colors')
 var ll = console.log
 
@@ -32,7 +32,7 @@ module.exports = {
     ll('Configuration changes, require restart'.yellow.bold)
   },
   SERVE:()=>{
-    let s = ' http://'+host+':'+port
+    let s = ' http://'+_static['host']+':'+_static['port']
     ll(timetrans(Date.now()).gray.bold+s)
   }
 }

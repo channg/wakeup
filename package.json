@@ -23,8 +23,6 @@
     "cross-spawn": "^6.0.5",
     "fs-extra": "^7.0.0",
     "is-in-path": "^1.0.0",
-    "less": "^3.8.1",
-    "node-sass": "^4.9.3",
     "postcss": "^7.0.2",
     "postcss-preset-env": "^5.3.0",
     "postcss-url": "^8.0.0",
@@ -35,9 +33,12 @@
     "rollup-plugin-livereload": "^0.6.0",
     "rollup-plugin-node-resolve": "^3.3.0",
     "rollup-plugin-postcss-fix": "^0.0.1",
-    "rollup-plugin-serve-favicon": "^0.4.4",
-    "rollup-pluginutils": "^2.3.1",
-    "stylus": "^0.54.5"
+    "rollup-plugin-serve-favicon": "^0.4.7",
+    "rollup-pluginutils": "^2.3.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "node-sass": "^4.9.3",
+    "less": "^3.8.1",
+    "stylus": "^0.54.5"
+  }
 }

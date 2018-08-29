@@ -5,15 +5,14 @@ const fs = require('fs')
 const cheerio = require('cheerio')
 const _static = require('./static')
 const livereload = require('livereload');
-const urlnode = require('url');
 
-function compile(opt) {
+function compile() {
   let html = fs.readFileSync(_static.localIndex, 'utf-8')
   let $ = cheerio.load(html)
-  
+  compileOpt($)
   compileScript($)
   compileLink($)
-  if (opt && opt.livereload) {
+  if (_static['live-reload']) {
     addLivereloadScript($)
   }
   compileImgSrc($)
@@ -68,14 +67,16 @@ function timetrans(date) {
 }
 
 function dolivereload() {
-  var server = livereload.createServer();
-  server.watch("./.wakeup");
+  var server = livereload.createServer({
+    port:_static['live-reload-port']
+  });
+  server.watch(_static.cachePath);
   console.log('livereload')
 }
 
 function addLivereloadScript($) {
   if (!$('script').attr('wu-livereload')) {
-    const str = `<script wu-livereload="true">document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +':35729/livereload.js?snipver=1"></' + 'script>')</script>`
+    const str = `<script wu-livereload="true">document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] +':${_static['live-reload-port']}/livereload.js?snipver=1"></' + 'script>')</script>`
     $('body').append(str)
   }
 }
@@ -84,7 +85,7 @@ function compileUrl($) {
   return cheerio.load($.html().replace(/(url\()(.*)(\))/g, function (match, p1, p2, p3) {
     let url = p2.replace(/&apos;|&quot;|'|"/g, "")
     if (url && isIn(process.cwd(), url)) {
-      let then = path.join('img', url).replace(/\\/, '/')
+      let then = path.join(_static['res-path'], url).replace(/\\/, '/')
       fse.copySync(url, then)
       return p1 + then + p3
     } else {
@@ -97,11 +98,23 @@ function compileImgSrc($) {
   $('img').each(function () {
     var imgSrc = $(this).attr('src')
     if(imgSrc&&isIn(process.cwd(),imgSrc)){
-      let then = path.join('img', imgSrc).replace(/\\/, '/')
+      let then = path.join(_static['res-path'], imgSrc).replace(/\\/, '/')
       $(this).attr('src',then)
       fse.copySync(imgSrc, then)
     }
   })
+}
+
+function compileOpt($) {
+  $('wu-opt').each(function () {
+    $(this).each(function () {
+      let optObj = this.attribs
+      for(let opt in optObj){
+        _static[opt] = optObj[opt]
+      }
+    })
+  })
+  $('wu-opt').remove()
 }
 
 

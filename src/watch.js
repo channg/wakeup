@@ -16,7 +16,7 @@ const url = require("postcss-url")
 
 module.exports = function () {
 
-  let saveConfig = JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
+  let saveConfig = summary()
   let srcArr = _static.srcArr
   //script
   if (srcArr && srcArr.length > 0) {
@@ -86,7 +86,7 @@ module.exports = function () {
           plugins:[
             url({
               url: 'copy',
-              assetsPath: 'img'
+              assetsPath: _static['res-path']
             }),
             preset(),
             autoprefixer({browsers: ['> 0.001%', 'not ie < 9']})
@@ -125,11 +125,11 @@ module.exports = function () {
       html(),
       serve({
         index:_static.localIndex,
-        contentBase: './.wakeup',
+        contentBase: _static.cachePath,
         favicon: path.resolve(__dirname, '../favicon.ico'),
-        host: _static.host,
-        port: _static.port,
-        verbose: false,
+        host: _static['host'],
+        port: _static['port'],
+        open: true
       })
     ]
     outputOptions.file = path.resolve('./.wakeup', _static.localIndex)
@@ -146,7 +146,7 @@ module.exports = function () {
         log.BUNDLE_END(event)
       } else if (event.code === 'END') {
         log.END()
-        let nowConfig = JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
+        let nowConfig = summary()
         if(saveConfig!==nowConfig){
           log.RESTART()
         }
@@ -161,4 +161,9 @@ module.exports = function () {
   }
 }
 
+
+function summary() {
+  return JSON.stringify(_static)
+  //return JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
+}
 

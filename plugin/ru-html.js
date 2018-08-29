@@ -20,7 +20,7 @@ module.exports = function string(opts = {}) {
       }
     },
     onwrite() {
-      compile({livereload:true})
+      compile()
     }
   };
 }

@@ -25,7 +25,7 @@ program
     }
     ensureCachePath()
     ensureIndex().then(() => {
-      compile({livereload:true})
+      compile()
       rollWatch()
       dolivereload()
     }).catch((err)=>{
