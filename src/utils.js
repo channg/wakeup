@@ -26,6 +26,7 @@ function compileScript($) {
     let _src = $(this).attr('src')
     if (_src && isIn(process.cwd(), _src)) {
       let _wk_name = $(this).attr('wu-name')
+      let _wk_format = $(this).attr('wu-format')
       if (fs.existsSync(_src)) {
         let output = _src
         if (_src && _src.substr(-3) !== '.js') {
@@ -33,7 +34,7 @@ function compileScript($) {
           $(this).attr('src', output)
         }
         let name = path.basename(_src).split('.')[0]
-        _arr.push({src: _src, name: _wk_name || name, output: output})
+        _arr.push({src: _src, name: _wk_name || name, output: output,format:_wk_format||'umd'})
       }
       if (_wk_name) {
         $(this).removeAttr('wu-name')

@@ -61,7 +61,7 @@ module.exports = function () {
         })
       ]
       outputOptions.file = path.resolve('./.wakeup', item.output)
-      outputOptions.format = 'umd'
+      outputOptions.format = item.format
       outputOptions.sourcemap = true
       outputOptions.name = item.name
       const watchOptions = {...inputOptions, output: [outputOptions]}
