@@ -19,29 +19,43 @@ const fs = require('fs')
 const importcwd = require('import-cwd')
 
 
-module.exports = function () {
+let scriptWatcher, stylesheetWatcher, htmlWatcher
+
+let restartLog = false
+/**
+ * save _static object
+ */
+let saveStatic
+
+module.exports = gwatch
+
+function gwatch(restart) {
+  if(saveStatic){
+    console.log(saveStatic['port'])
+    console.log(_static['port'])
+    contRestart(saveStatic,_static)
+  }else{
+    saveStatic = Object.assign({},_static)
+  }
   let saveConfig = summary()
   let srcArr = _static.srcArr
   //script
   if (srcArr && srcArr.length > 0) {
     srcArr.forEach((item) => {
-      
-      console.log(item.src)
-      
       let inputOptions = {}
       let outputOptions = {}
       inputOptions.input = item.src
       inputOptions.treeshake = false
       inputOptions.plugins = [
-        _static['ts']?typescript(typescriptOptions({
+        _static['ts'] ? typescript(typescriptOptions({
           tsconfigDefaults: {
             compilerOptions: {
               sourceMap: true
             }
           },
           cacheRoot: path.resolve(_static.cachePath, './.rts2_cache'),
-          typescript:importcwd('typescript')
-        })):{},
+          typescript: importcwd('typescript')
+        })) : {},
         vue(),
         json(),
         postcss({
@@ -65,11 +79,14 @@ module.exports = function () {
       outputOptions.sourcemap = true
       outputOptions.name = item.name
       const watchOptions = {...inputOptions, output: [outputOptions]}
-      const watcher = watch(watchOptions)
+      scriptWatcher = watch(watchOptions)
       
-      watcher.on('event', event => {
+      scriptWatcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
+          if(restartLog){
+            log.RESTART()
+          }
         } else if (event.code === 'BUNDLE_START') {
           log.BUNDLE_START(event)
         } else if (event.code === 'BUNDLE_END') {
@@ -113,10 +130,13 @@ module.exports = function () {
       outputOptions.file = path.resolve('./.wakeup', fn)
       outputOptions.format = 'esm' // not use
       const watchOptions = {...inputOptions, output: [outputOptions]}
-      const watcher = watch(watchOptions)
-      watcher.on('event', event => {
+      stylesheetWatcher = watch(watchOptions)
+      stylesheetWatcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
+          if(restartLog){
+            log.RESTART()
+          }
         } else if (event.code === 'BUNDLE_START') {
           log.BUNDLE_START(event)
         } else if (event.code === 'BUNDLE_END') {
@@ -133,7 +153,7 @@ module.exports = function () {
       })
     })
   }
-  if (_static.localIndex.substr(-4) === 'html') {
+  if (_static.localIndex.substr(-4) === 'html' && !restart) {
     let inputOptions = {}
     let outputOptions = {}
     inputOptions.input = _static.localIndex
@@ -152,8 +172,8 @@ module.exports = function () {
     outputOptions.file = path.resolve('./.wakeup', _static.localIndex)
     outputOptions.format = 'esm' // not use
     const watchOptions = {...inputOptions, output: [outputOptions]}
-    const watcher = watch(watchOptions)
-    watcher.on('event', event => {
+    htmlWatcher = watch(watchOptions)
+    htmlWatcher.on('event', event => {
       if (event.code === 'START') {
         log.START()
         log.SERVE()
@@ -165,7 +185,7 @@ module.exports = function () {
         log.END()
         let nowConfig = summary()
         if (saveConfig !== nowConfig) {
-          log.RESTART()
+          reWatch()
         }
       } else if (event.code === 'FATAL') {
         log.FATAL(event)
@@ -193,4 +213,16 @@ function typescriptOptions(options) {
     options.tsconfig = currentTsConfig
   }
   return options
+}
+
+function reWatch() {
+  scriptWatcher&&scriptWatcher.close()
+  stylesheetWatcher&&stylesheetWatcher.close()
+  gwatch(true)
+}
+
+function contRestart(n,w){
+  if(n['port']!==w['port']||n['live-reload']!==w['live-reload']||n['live-reload-port']!==w['live-reload-port']||n['live-reload-port']!==w['live-reload-port']||n['open-browser']!==w['open-browser']){
+    restartLog = true
+  }
 }

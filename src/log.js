@@ -29,7 +29,7 @@ module.exports = {
     ll(data.error.codeFrame)
   },
   RESTART:()=>{
-    ll('Configuration changes, require restart'.yellow.bold)
+    ll('port||host||open-browser||live-reload||live-reload-port changes, require restart'.yellow.bold)
   },
   SERVE:()=>{
     let s = ' http://'+_static['host']+':'+_static['port']
