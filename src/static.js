@@ -10,5 +10,7 @@ module.exports = {
   ['res-path']: 'img',
   ['open-browser']: false,
   ['live-reload']: true,
-  ['live-reload-port']: 35729
+  ['live-reload-port']: 35729,
+  ['ts-config']: './tsconfig.json',
+  ['ts']: false
 }

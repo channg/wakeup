@@ -14,19 +14,34 @@ const _static = require('./static')
 const html = require('../plugin/ru-html')
 const url = require("postcss-url")
 const vue = require('rollup-plugin-vue').default
+const typescript = require('rollup-plugin-typescript2')
+const fs = require('fs')
+const importcwd = require('import-cwd')
+
 
 module.exports = function () {
-  
   let saveConfig = summary()
   let srcArr = _static.srcArr
   //script
   if (srcArr && srcArr.length > 0) {
-    srcArr.forEach((item, index) => {
+    srcArr.forEach((item) => {
+      
+      console.log(item.src)
+      
       let inputOptions = {}
       let outputOptions = {}
       inputOptions.input = item.src
       inputOptions.treeshake = false
       inputOptions.plugins = [
+        _static['ts']?typescript(typescriptOptions({
+          tsconfigDefaults: {
+            compilerOptions: {
+              sourceMap: true
+            }
+          },
+          cacheRoot: path.resolve(_static.cachePath, './.rts2_cache'),
+          typescript:importcwd('typescript')
+        })):{},
         vue(),
         json(),
         postcss({
@@ -45,13 +60,13 @@ module.exports = function () {
           include: './**'
         })
       ]
-      outputOptions.file = path.resolve('./.wakeup', item.src)
+      outputOptions.file = path.resolve('./.wakeup', item.output)
       outputOptions.format = 'umd'
       outputOptions.sourcemap = true
       outputOptions.name = item.name
       const watchOptions = {...inputOptions, output: [outputOptions]}
       const watcher = watch(watchOptions)
-
+      
       watcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
@@ -84,16 +99,16 @@ module.exports = function () {
         postcss({
           sourceMap: true,
           extract: true,
-          to:path.resolve('./.wakeup', fn),
-          plugins:[
+          to: path.resolve('./.wakeup', fn),
+          plugins: [
             url({
               url: 'copy',
               assetsPath: _static['res-path']
             }),
             preset(),
             autoprefixer({browsers: ['> 0.001%', 'not ie < 9']})
-            ]
-          })
+          ]
+        })
       ]
       outputOptions.file = path.resolve('./.wakeup', fn)
       outputOptions.format = 'esm' // not use
@@ -126,7 +141,7 @@ module.exports = function () {
     inputOptions.plugins = [
       html(),
       serve({
-        index:_static.localIndex,
+        index: _static.localIndex,
         contentBase: _static.cachePath,
         favicon: path.resolve(__dirname, '../favicon.ico'),
         host: _static['host'],
@@ -149,7 +164,7 @@ module.exports = function () {
       } else if (event.code === 'END') {
         log.END()
         let nowConfig = summary()
-        if(saveConfig!==nowConfig){
+        if (saveConfig !== nowConfig) {
           log.RESTART()
         }
       } else if (event.code === 'FATAL') {
@@ -169,3 +184,13 @@ function summary() {
   //return JSON.stringify({srcArr:_static.srcArr,cssArr:_static.hrefArr})
 }
 
+/**
+ * use process.cwd() tsconfig
+ */
+function typescriptOptions(options) {
+  let currentTsConfig = path.resolve(process.cwd(), _static['ts-config'])
+  if (fs.existsSync(currentTsConfig)) {
+    options.tsconfig = currentTsConfig
+  }
+  return options
+}

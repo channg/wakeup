@@ -27,8 +27,13 @@ function compileScript($) {
     if (_src && isIn(process.cwd(), _src)) {
       let _wk_name = $(this).attr('wu-name')
       if (fs.existsSync(_src)) {
+        let output = _src
+        if (_src && _src.substr(-3) !== '.js') {
+          output += '.js'
+          $(this).attr('src', output)
+        }
         let name = path.basename(_src).split('.')[0]
-        _arr.push({src: _src, name: _wk_name || name})
+        _arr.push({src: _src, name: _wk_name || name, output: output})
       }
       if (_wk_name) {
         $(this).removeAttr('wu-name')
@@ -68,7 +73,7 @@ function timetrans(date) {
 
 function dolivereload() {
   var server = livereload.createServer({
-    port:_static['live-reload-port']
+    port: _static['live-reload-port']
   });
   server.watch(_static.cachePath);
   console.log('livereload')
@@ -86,7 +91,7 @@ function compileUrl($) {
     let url = p2.replace(/&apos;|&quot;|'|"/g, "")
     if (url && isIn(process.cwd(), url)) {
       let then = path.join(_static['res-path'], url).replace(/\\/g, '/')
-      fse.copySync(url, path.resolve(_static.cachePath,then))
+      fse.copySync(url, path.resolve(_static.cachePath, then))
       return p1 + then + p3
     } else {
       return match
@@ -97,10 +102,10 @@ function compileUrl($) {
 function compileImgSrc($) {
   $('img').each(function () {
     var imgSrc = $(this).attr('src')
-    if(imgSrc&&isIn(process.cwd(),imgSrc)){
+    if (imgSrc && isIn(process.cwd(), imgSrc)) {
       let then = (path.join(_static['res-path'], imgSrc)).replace(/\\/g, '/')
-      $(this).attr('src',then)
-      fse.copySync(imgSrc, path.resolve(_static.cachePath,then))
+      $(this).attr('src', then)
+      fse.copySync(imgSrc, path.resolve(_static.cachePath, then))
     }
   })
 }
@@ -109,7 +114,7 @@ function compileOpt($) {
   $('wu-opt').each(function () {
     $(this).each(function () {
       let optObj = this.attribs
-      for(let opt in optObj){
+      for (let opt in optObj) {
         _static[opt] = optObj[opt]
       }
     })
