@@ -127,5 +127,7 @@ function compileOpt($) {
 module.exports = {
   dolivereload: dolivereload,
   timetrans: timetrans,
-  compile: compile
+  compile: compile,
+  compileImgSrc:compileImgSrc,
+  compileUrl:compileUrl
 }

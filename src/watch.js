@@ -17,6 +17,7 @@ const vue = require('rollup-plugin-vue').default
 const typescript = require('rollup-plugin-typescript2')
 const fs = require('fs')
 const importcwd = require('import-cwd')
+const vueSrc = require('../plugin/vueSrc')
 
 
 let scriptWatcher, stylesheetWatcher, htmlWatcher
@@ -30,12 +31,10 @@ let saveStatic
 module.exports = gwatch
 
 function gwatch(restart) {
-  if(saveStatic){
-    console.log(saveStatic['port'])
-    console.log(_static['port'])
-    contRestart(saveStatic,_static)
-  }else{
-    saveStatic = Object.assign({},_static)
+  if (saveStatic) {
+    contRestart(saveStatic, _static)
+  } else {
+    saveStatic = Object.assign({}, _static)
   }
   let saveConfig = summary()
   let srcArr = _static.srcArr
@@ -47,6 +46,7 @@ function gwatch(restart) {
       inputOptions.input = item.src
       inputOptions.treeshake = false
       inputOptions.plugins = [
+        vueSrc(),
         _static['ts'] ? typescript(typescriptOptions({
           tsconfigDefaults: {
             compilerOptions: {
@@ -56,9 +56,11 @@ function gwatch(restart) {
           cacheRoot: path.resolve(_static.cachePath, './.rts2_cache'),
           typescript: importcwd('typescript')
         })) : {},
-        vue(),
         json(),
+        vue(),
         postcss({
+          sourceMap: true,
+          to: path.resolve(_static.cachePath, item.output),
           plugins: [
             url({
               url: 'copy',
@@ -74,7 +76,7 @@ function gwatch(restart) {
           include: './**'
         })
       ]
-      outputOptions.file = path.resolve('./.wakeup', item.output)
+      outputOptions.file = path.resolve(_static.cachePath, item.output)
       outputOptions.format = item.format
       outputOptions.sourcemap = true
       outputOptions.name = item.name
@@ -84,7 +86,7 @@ function gwatch(restart) {
       scriptWatcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
-          if(restartLog){
+          if (restartLog) {
             log.RESTART()
           }
         } else if (event.code === 'BUNDLE_START') {
@@ -134,7 +136,7 @@ function gwatch(restart) {
       stylesheetWatcher.on('event', event => {
         if (event.code === 'START') {
           log.START()
-          if(restartLog){
+          if (restartLog) {
             log.RESTART()
           }
         } else if (event.code === 'BUNDLE_START') {
@@ -216,13 +218,13 @@ function typescriptOptions(options) {
 }
 
 function reWatch() {
-  scriptWatcher&&scriptWatcher.close()
-  stylesheetWatcher&&stylesheetWatcher.close()
+  scriptWatcher && scriptWatcher.close()
+  stylesheetWatcher && stylesheetWatcher.close()
   gwatch(true)
 }
 
-function contRestart(n,w){
-  if(n['port']!==w['port']||n['live-reload']!==w['live-reload']||n['live-reload-port']!==w['live-reload-port']||n['live-reload-port']!==w['live-reload-port']||n['open-browser']!==w['open-browser']){
+function contRestart(n, w) {
+  if (n['port'] !== w['port'] || n['live-reload'] !== w['live-reload'] || n['live-reload-port'] !== w['live-reload-port'] || n['live-reload-port'] !== w['live-reload-port'] || n['open-browser'] !== w['open-browser']) {
     restartLog = true
   }
 }
