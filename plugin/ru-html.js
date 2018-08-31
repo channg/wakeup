@@ -13,7 +13,7 @@ module.exports = function string(opts = {}) {
       if (filter(id)) {
         kv[id] = code
         const x = {
-          code: ``,
+          code: `export default null`,
           map: {mappings: ''}
         };
         return x;

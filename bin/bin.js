@@ -6,8 +6,8 @@ require('colors')
 const fs = require('fs')
 const fse = require('fs-extra')
 const _static = require('../src/static')
-const {compile,dolivereload} = require('../src/utils')
-const {rollWatch} = require('../src/instruction')
+const {compile, dolivereload} = require('../src/utils')
+const {rollWatch, rollBuild} = require('../src/instruction')
 
 program
   .version(version);
@@ -35,8 +35,31 @@ program
         console.log(err.message.red)
       }
     })
-  });
+  })
 
+program
+  .command('build')
+  .alias('b')
+  .description('build the program')
+  .option("-i, --index [value]","Modify entry HTML")
+  .action((options) => {
+    if(options&&options.index&&options.index!==true){
+      if(options.index.substr(-5)!=='.html')
+        options.index+='.html'
+      _static.localIndex = options.index
+    }
+    ensureCachePath()
+    ensureIndex().then(() => {
+      compile()
+      rollBuild()
+    }).catch((err)=>{
+      if(err.errno===111){
+        console.log(("error:not find the "+_static.localIndex).red)
+      }else{
+        console.log(err.message.red)
+      }
+    })
+  })
 
 program.parse(process.argv);
 

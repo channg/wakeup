@@ -1,4 +1,4 @@
-const {watch} = require('rollup');
+const {watch} = require('rollup')
 const json = require('rollup-plugin-json')
 const postcss = require('rollup-plugin-postcss-fix')
 const preset = require('postcss-preset-env')
@@ -129,7 +129,7 @@ function gwatch(restart) {
           ]
         })
       ]
-      outputOptions.file = path.resolve('./.wakeup', fn)
+      outputOptions.file = path.resolve(_static.cachePath, fn)
       outputOptions.format = 'esm' // not use
       const watchOptions = {...inputOptions, output: [outputOptions]}
       stylesheetWatcher = watch(watchOptions)
@@ -171,7 +171,7 @@ function gwatch(restart) {
         open: _static['open-browser']
       })
     ]
-    outputOptions.file = path.resolve('./.wakeup', _static.localIndex)
+    outputOptions.file = path.resolve(_static.cachePath, _static.localIndex)
     outputOptions.format = 'esm' // not use
     const watchOptions = {...inputOptions, output: [outputOptions]}
     htmlWatcher = watch(watchOptions)

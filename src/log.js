@@ -34,6 +34,9 @@ module.exports = {
   SERVE:()=>{
     let s = ' http://'+_static['host']+':'+_static['port']
     ll(timetrans(Date.now()).gray.bold+s)
+  },
+  BUILD:(data)=>{
+    ll(timetrans(Date.now()).gray.bold+(' build -> ').green.bold+data.input+"")
   }
 }
 
