@@ -22,7 +22,7 @@ npm i -g node-wakeup
 ```
 
 ### use  so easy
-> Write a html
+> Write a html  name `index.html`
 
 then
 
