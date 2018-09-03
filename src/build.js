@@ -40,14 +40,14 @@ async function gbuild(restart) {
               sourceMap: true
             }
           },
-          cacheRoot: path.resolve(_static.cachePath, './.rts2_cache'),
+          cacheRoot: path.resolve(_static.buildPath, './.rts2_cache'),
           typescript: importcwd('typescript')
         })) : {},
         json(),
         vue(),
         postcss({
           sourceMap: true,
-          to: path.resolve(_static.cachePath, item.output),
+          to: path.resolve(_static.buildPath, item.output),
           plugins: [
             url({
               url: 'copy',
@@ -63,7 +63,7 @@ async function gbuild(restart) {
           include: './**'
         })
       ]
-      outputOptions.file = path.resolve(_static.cachePath, item.output)
+      outputOptions.file = path.resolve(_static.buildPath, item.output)
       outputOptions.format = item.format
       outputOptions.sourcemap = true
       outputOptions.name = item.name
@@ -85,7 +85,7 @@ async function gbuild(restart) {
         postcss({
           sourceMap: true,
           extract: true,
-          to: path.resolve('./.wakeup', fn),
+          to: path.resolve(_static.buildPath, fn),
           plugins: [
             url({
               url: 'copy',
@@ -96,7 +96,7 @@ async function gbuild(restart) {
           ]
         })
       ]
-      outputOptions.file = path.resolve(_static.cachePath, fn)
+      outputOptions.file = path.resolve(_static.buildPath, fn)
       outputOptions.format = 'esm' // not use
       const bundle = await rollup(inputOptions);
       log.BUILD({input: item.href});
@@ -111,7 +111,7 @@ async function gbuild(restart) {
     inputOptions.plugins = [
       html()
     ]
-    outputOptions.file = path.resolve(_static.cachePath, _static.localIndex)
+    outputOptions.file = path.resolve(_static.buildPath, _static.localIndex)
     outputOptions.format = 'esm' // not use
     const bundle = await rollup(inputOptions);
     log.BUILD({input: _static.localIndex});

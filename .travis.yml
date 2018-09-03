@@ -1,0 +1,9 @@
+sudo: required
+language: node_js
+node_js:
+  - "7"
+  - "8"
+  - "9"
+script:
+  - cd test/css && node ../../bin/bin build
+  - cd test/index && node ../../bin/bin build

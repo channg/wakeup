@@ -1,5 +1,6 @@
 module.exports = {
   cachePath: './.wakeup',
+  buildPath: './dist',
   localIndex: './index.html',// options in --index
   srcArr: [],
   index: 'html',
