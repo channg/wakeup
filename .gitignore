@@ -5,10 +5,9 @@ node_modules
 .vscode/
 .wakeup
 rollup.config.js
-index.html
-index.js
-index.css
-index.less
-a.jpg
+test/dist
+
+
+
+
 yarn-error.log
-some.css
