@@ -18,7 +18,7 @@ function compile(build) {
   }
   compileImgSrc($, build)
   $ = compileUrl($, build)
-  outPutFile($)
+  outPutFile($,build)
 }
 
 function compileScript($) {
@@ -45,8 +45,8 @@ function compileScript($) {
   _static.srcArr = _arr
 }
 
-function outPutFile($) {
-  fse.outputFileSync(path.resolve('./.wakeup', _static.localIndex), $.html())
+function outPutFile($, build) {
+  fse.outputFileSync(path.resolve(build?_static.buildPath:_static.cachePath, _static.localIndex), $.html())
 }
 
 

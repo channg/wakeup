@@ -1,6 +1,7 @@
 const {createFilter} = require('rollup-pluginutils')
 const {compile} = require('../src/utils')
 module.exports = function string(opts = {}) {
+  let build = opts.build
   if (!opts.include) {
     opts.include = '**/*.html'
   }
@@ -20,7 +21,7 @@ module.exports = function string(opts = {}) {
       }
     },
     onwrite() {
-      compile()
+      compile(build)
     }
   };
 }

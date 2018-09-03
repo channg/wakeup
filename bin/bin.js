@@ -2,6 +2,7 @@
 const version = require('../package.json').version
 const program = require('commander')
 require('colors')
+const path = require('path')
 
 const fs = require('fs')
 const fse = require('fs-extra')
@@ -17,12 +18,15 @@ program
   .alias('w')
   .description('watch the program')
   .option("-i, --index [value]","Modify entry HTML")
+  .option("-b, --base [value]","base path")
   .action((options) => {
+    let dirname = "."
     if(options&&options.index&&options.index!==true){
       if(options.index.substr(-5)!=='.html')
-        options.index+='.html'
-      _static.localIndex = options.index
+        dirname = options.index+='.html'
+      _static.localIndex = path.basename(options.index)
     }
+    process.chdir(path.dirname(dirname))
     ensureCachePath()
     ensureIndex().then(() => {
       compile()
@@ -43,13 +47,17 @@ program
   .description('build the program')
   .option("-i, --index [value]","Modify entry HTML")
   .action((options) => {
+    
+    let dirname = "."
     if(options&&options.index&&options.index!==true){
       if(options.index.substr(-5)!=='.html')
-        options.index+='.html'
-      _static.localIndex = options.index
+        dirname = options.index+='.html'
+        _static.localIndex = path.basename(options.index)
     }
+    process.chdir(path.dirname(dirname))
+    ensureCachePath()
     ensureIndex().then(() => {
-      compile()
+      compile(true)
       rollBuild()
     }).catch((err)=>{
       if(err.errno===111){
@@ -64,7 +72,7 @@ program.parse(process.argv);
 
 function ensureCachePath() {
   fse.removeSync(_static.cachePath)
-  fse.ensureDirSync(_static.cachePath)
+  fse.removeSync(_static.buildPath)
 }
 
 function ensureIndex() {

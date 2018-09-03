@@ -1,4 +1,4 @@
-const {watch,rollup} = require('rollup')
+const {rollup} = require('rollup')
 const json = require('rollup-plugin-json')
 const postcss = require('rollup-plugin-postcss-fix')
 const preset = require('postcss-preset-env')
@@ -109,7 +109,9 @@ async function gbuild(restart) {
     inputOptions.input = _static.localIndex
     inputOptions.treeshake = true
     inputOptions.plugins = [
-      html()
+      html({
+        build:true
+      })
     ]
     outputOptions.file = path.resolve(_static.buildPath, _static.localIndex)
     outputOptions.format = 'esm' // not use

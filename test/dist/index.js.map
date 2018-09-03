@@ -1,1 +1,0 @@
-{"version":3,"file":"index.js","sources":["../index.js"],"sourcesContent":["console.log(100)\nconsole.log(100)\nexport default {\n  a:2\n}"],"names":["console","log","a"],"mappings":";;;EAAAA,QAAQC,GAAR,CAAY,GAAZ;EACAD,QAAQC,GAAR,CAAY,GAAZ;AACA,cAAe;EACbC,KAAE;EADW,CAAf;;;;;;;;"}
