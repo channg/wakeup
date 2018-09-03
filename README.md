@@ -22,14 +22,7 @@ npm i -g node-wakeup
 ```
 
 ### use  so easy
-> Write a html  name `index.html`
-
-then
-
-```
-wakeup watch
-```
-wakeup'll help you parse everything inside HTML, including js, CSS, and package it for you.
+> Write a html  name `index.html` like  this
 
 ```
 <!DOCTYPE html>
@@ -37,13 +30,23 @@ wakeup'll help you parse everything inside HTML, including js, CSS, and package 
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" href="wake.css">
 </head>
 <body>
 	<script src="index.js"></script>
 </body>
 </html>
 ```
+
+Next you can write es6, or commonjs in index.js
+
+end
+
+```
+wakeup watch
+```
+
+wakeup'll help you parse everything inside HTML, including js, CSS, and package it for you.
+
 You just need to write html according to your habits.
 
 
@@ -56,6 +59,7 @@ write `.less` `.styl` `.sass` in html
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="wake.css">
     <link rel="stylesheet" href="wake1.less">
     <link rel="stylesheet" href="wake2.styl">
     <link rel="stylesheet" href="wake3.sass">
