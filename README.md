@@ -50,6 +50,8 @@ You just need to write html according to your habits.
 ### sass less stylus ts vue
 
 stylesheet
+
+write `.less` `.styl` `.sass` in html
 ```
 <head>
     <meta charset="UTF-8">
@@ -59,7 +61,9 @@ stylesheet
     <link rel="stylesheet" href="wake3.sass">
 </head>
 ```
-script
+script 
+
+writ `.vue` `.ts` in html
 ```
 <script src="index.ts"></script>
 <script src="index2.vue"></script>
