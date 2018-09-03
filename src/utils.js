@@ -6,7 +6,8 @@ const cheerio = require('cheerio')
 const _static = require('./static')
 const livereload = require('livereload');
 
-function compile() {
+function compile(build) {
+  
   let html = fs.readFileSync(_static.localIndex, 'utf-8')
   let $ = cheerio.load(html)
   compileOpt($)
@@ -15,8 +16,8 @@ function compile() {
   if (_static['live-reload']) {
     addLivereloadScript($)
   }
-  compileImgSrc($)
-  $ = compileUrl($)
+  compileImgSrc($, build)
+  $ = compileUrl($, build)
   outPutFile($)
 }
 
@@ -34,7 +35,7 @@ function compileScript($) {
           $(this).attr('src', output)
         }
         let name = path.basename(_src).split('.')[0]
-        _arr.push({src: _src, name: _wk_name || name, output: output,format:_wk_format||'umd'})
+        _arr.push({src: _src, name: _wk_name || name, output: output, format: _wk_format || 'umd'})
       }
       if (_wk_name) {
         $(this).removeAttr('wu-name')
@@ -87,12 +88,12 @@ function addLivereloadScript($) {
   }
 }
 
-function compileUrl($) {
+function compileUrl($, build) {
   return cheerio.load($.html().replace(/(url\()(.*)(\))/g, function (match, p1, p2, p3) {
     let url = p2.replace(/&apos;|&quot;|'|"/g, "")
     if (url && isIn(process.cwd(), url)) {
       let then = path.join(_static['res-path'], url).replace(/\\/g, '/')
-      fse.copySync(url, path.resolve(_static.cachePath, then))
+      fse.copySync(url, path.resolve(build ? _static.buildPath : _static.cachePath, then))
       return p1 + then + p3
     } else {
       return match
@@ -100,13 +101,13 @@ function compileUrl($) {
   }))
 }
 
-function compileImgSrc($) {
+function compileImgSrc($, build) {
   $('img').each(function () {
     var imgSrc = $(this).attr('src')
     if (imgSrc && isIn(process.cwd(), imgSrc)) {
       let then = (path.join(_static['res-path'], imgSrc)).replace(/\\/g, '/')
       $(this).attr('src', then)
-      fse.copySync(imgSrc, path.resolve(_static.cachePath, then))
+      fse.copySync(imgSrc, path.resolve(build ? _static.buildPath : _static.cachePath, then))
     }
   })
 }
@@ -128,6 +129,6 @@ module.exports = {
   dolivereload: dolivereload,
   timetrans: timetrans,
   compile: compile,
-  compileImgSrc:compileImgSrc,
-  compileUrl:compileUrl
+  compileImgSrc: compileImgSrc,
+  compileUrl: compileUrl
 }

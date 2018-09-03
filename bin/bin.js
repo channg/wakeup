@@ -48,7 +48,6 @@ program
         options.index+='.html'
       _static.localIndex = options.index
     }
-    ensureCachePath()
     ensureIndex().then(() => {
       compile()
       rollBuild()
