@@ -72,4 +72,22 @@ script
 <script src="index.js" wu-name="kaak" wu-format="iife"></script>
 ```
 
+### Only Two commands
+
+Detect file changes and package them into the .wekeup directory
+```
+	wakeup watch // wu w
+```
+and  Bundles to dist directory
+
+```
+	wakeup build //wu b
+```
+
+a options is --index To change the name of the entry html
+```
+	wakeup build --index test.html // or wu b -i test
+```
+
+
 ### Ok, we can work happily.
