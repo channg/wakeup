@@ -1,13 +1,12 @@
 {
-  "name": "wakeup",
+  "name": "node-wakeup",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A zero-config library bundler.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "wakeup": "bin/bin.js"
+    "wakeup": "bin/bin.js",
+    "wu": "bin/bin.js"
   },
   "author": "",
   "license": "ISC",

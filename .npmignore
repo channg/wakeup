@@ -1,10 +1,7 @@
-.DS_Store
+test
 node_modules
-*.sock
 .idea
 .vscode/
-.wakeup
 rollup.config.js
-test/dist
 dist
-yarn-error.log
+.npmignore
