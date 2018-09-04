@@ -97,5 +97,24 @@ a options is --index To change the name of the entry html
 	wakeup build --index test.html // or wu b -i test
 ```
 
+>Ok,we can work happily.
 
-### Ok, we can work happily.
+### Some options
+>Wakeup has no configuration file, but you can insert <wu-opt></wu-opt> on HTML
+
+```
+<body>
+
+<wu-opt port="9999" open-browser="true"></wu-opt>
+</body>
+
+```
+* `port` default **10001**
+* `host` default **localhost**
+* `res-path` Image packaging prefix default **img**
+* `open-browser` default **false**
+* `live-reload` default **true**
+* `live-reload-port` default **35729**
+* `live-reload-port` default **35729**
+* `ts` use typescript default **false**
+* `ts-config` If this file exists , use typescript config  default **./tsconfig.json**
